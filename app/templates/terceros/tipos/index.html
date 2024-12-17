@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Tipos de terceros{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div>
+		<h1 class="display-6">Tipos de terceros</h1>
+		<a href="{{url_for('tipo_terceros.create')}}" class="btn btn-success">Nuevo</a>
+		<button type="button" class="btn btn-primary" id="btnGenerarPDF"><i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF</button>
+	</div>
+	<table class="table table-hover mt-3">
+		<thead>
+			<tr>
+				<th class="col">Id</th>
+				<th class="col">Nombre</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for tipo_tercero in tipo_terceros %}
+			<tr>
+				<td>{{tipo_tercero.id_tipo_tercero}}</td>
+				<td>{{tipo_tercero.nombre}}</td>
+				<td>
+					<a href="{{url_for('tipo_terceros.update', id_tipo_tercero=tipo_tercero.id_tipo_tercero)}}" class="btn btn-sm btn-dark"><i class="bi bi-pencil-square"></i></a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<!-- GENERADOR DE PDF -->
+<script type="text/javascript">
+	const generarPDF = async () => {
+        try {
+            const respuesta = await fetch("{{url_for('tipo_terceros.get')}}");
+            const data = await respuesta.json();
+
+            const tipo_terceros = [];
+
+            data.forEach(tipo_tercero => {
+            	tipo_terceros.push([
+            		tipo_tercero.id_tipo_tercero, 
+            		tipo_tercero.nombre, 
+            	]);
+        	});
+
+        	const doc = new jspdf.jsPDF();
+
+        	doc.text("Tipos de tercero", 16, 10);
+        	doc.autoTable({
+                head: [['Id', 'Nombre']], 
+                body: tipo_terceros,
+                startY: 15,
+                theme: 'plain',
+        	});
+
+        	doc.save('tipo-terceros.pdf');
+        } catch (error) {
+            console.log(error);
+        }
+	}
+</script>
+{% endblock %}

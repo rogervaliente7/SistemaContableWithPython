@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Inventario{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div>
+		<h1 class="display-6">Inventario</h1>
+		<a href="{{url_for('inventario.compra')}}" class="btn btn-success">Nueva compra</a>
+	</div>
+	<table class="table table-hover mt-3">
+		<thead>
+			<tr>
+				<th class="col">Codigo</th>
+				<th class="col">Fecha</th>
+				<th class="col">Proveedor</th>
+				<th class="col">Monto Total</th>
+				<th class="col"></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for compra in compras %}
+			<tr>
+				<td>{{compra.id_compra}}</td>
+				<td>{{compra.fecha}}</td>
+				<td>{{compra.tercero.nombre}}</td>
+				<td>${{compra.total}}</td>
+				<td>
+					<a href="{{url_for('inventario.detalle', id_compra = compra.id_compra)}}" class="btn btn-sm btn-dark" class="btn btn-sm btn-dark">
+						<i class="bi bi-eye-fill"></i>
+						Ver detalle
+					</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Catalogo de cuentas{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div class="container-sm">
+		<h2 class="display-6">Nueva cuenta</h2>
+		<form action="" method="POST">
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<label for="cod_cuenta">* Codigo</label>
+					<input class="form-control" type="text" name="cod_cuenta" id="cod_cuenta" required>
+				</div>
+				<div class="col-md-6">
+					<label for="nombre">* Nombre</label>
+					<input class="form-control" type="text" name="nombre" id="nombre" required>
+				</div>
+			</div>
+			<div>
+				<p><i>( * ) Campos obligatorios</i></p>
+			</div>
+			<div>
+				<button class="btn btn-success" type="submit">Guardar</button>
+				<a class="btn btn-secondary" href="{{url_for('catalogo_cuentas.index')}}">Cancelar</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

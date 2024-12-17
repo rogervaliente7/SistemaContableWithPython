@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Tipos de documento{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div class="container-sm">
+		<h2 class="display-6">Nuevo tipo de documento</h2>
+		<form action="" method="POST">
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<label for="nombre">* Nombre</label>
+					<input class="form-control" type="text" name="nombre" id="nombre" required>
+				</div>
+			</div>
+			<div>
+				<p><i>( * ) Campos obligatorios</i></p>
+			</div>
+			<div>
+				<button class="btn btn-success" type="submit">Guardar</button>
+				<a class="btn btn-secondary" href="{{url_for('tipo_documentos.index')}}">Cancelar</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

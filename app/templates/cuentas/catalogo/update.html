@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Catalogo de cuentas{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div class="container-sm">
+		<h2 class="display-6">Modificar cuenta</h2>
+		<form action="" method="POST">
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<label for="cod_cuenta">Codigo</label>
+					<input class="form-control" type="text" name="cod_cuenta" id="cod_cuenta" value="{{cuenta.cod_cuenta}}" required disabled>
+				</div>
+				<div class="col-md-6">
+					<label for="nombre">* Nombre</label>
+					<input class="form-control" type="text" name="nombre" id="nombre" value="{{cuenta.nombre}}" required>
+				</div>
+			</div>
+			<div>
+				<p><i>( * ) Campos obligatorios</i></p>
+			</div>
+			<div>
+				<button class="btn btn-warning" type="submit">Actualizar</button>
+				<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmar">Eliminar</button>
+				<a class="btn btn-secondary" href="{{url_for('catalogo_cuentas.index')}}">Cancelar</a>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- VENTANA MODAL PARA CONFIRMAR LA ELIMINACION DE UN REGISTRO -->
+<div class="modal fade" id="confirmar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+    	<div class="modal-content">
+	      	<div class="modal-header">
+	        	<h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar cuenta</h1>
+	        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      	</div>
+	      	<div class="modal-body">
+	        	<p>¿Desea eliminar esta cuenta?</p>
+	      	</div>
+		    <div class="modal-footer">
+		    	<button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+		    	<a class="btn btn-danger btn-sm" href="{{url_for('catalogo_cuentas.delete', cod_cuenta = cuenta.cod_cuenta)}}">Si</a>
+		    </div>
+    	</div>
+  	</div>
+</div>
+{% endblock %}

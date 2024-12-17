@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Terceros{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<h2 class="display-6">Nuevo tercero</h2>
+	<form action="" method="POST">
+		<div class="row mb-3">
+			<div class="col-md-4">
+				<label for="nombre">* Nombre</label>
+				<input class="form-control" type="text" name="nombre" id="nombre" required>
+			</div>
+			<div class="col-md-8">
+				<label for="direccion">Direccion</label>
+				<input class="form-control" type="text" name="direccion" id="direccion" required>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-4">
+				<label for="telefono">* Telefono</label>
+				<input class="form-control" type="text" name="telefono" id="telefono" required>
+			</div>
+			<div class="col-md-4">
+				<label for="email">* Email</label>
+				<input class="form-control" type="email" name="email" id="email" required>
+			</div>
+			<div class="col-md-4">
+				<label for="id_tipo_tercero">* Tipo de tercero</label>
+				<select class="form-control" name="id_tipo_tercero" id="id_tipo_tercero" required>
+					<option value="" selected>- Selecciona el tipo de tercero -</option>
+					{% for tipo_tercero in tipo_terceros %}
+						<option value="{{tipo_tercero.id_tipo_tercero}}">{{tipo_tercero.nombre}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div>
+			<p><i>( * ) Campos obligatorios</i></p>
+		</div>
+		<div>
+			<button class="btn btn-success" type="submit">Guardar</button>
+			<a class="btn btn-secondary" href="{{url_for('terceros.index')}}">Cancelar</a>
+		</div>
+	</form>
+</div>
+{% endblock %}

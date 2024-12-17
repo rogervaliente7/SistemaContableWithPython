@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Tercero{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<h2 class="display-6">Modificar tercero</h2>
+	<form action="" method="POST">
+		<div class="row mb-3">
+			<div class="col-md-4">
+				<label for="nombre">* Nombre</label>
+				<input class="form-control" type="text" name="nombre" id="nombre" value="{{tercero.nombre}}" required>
+			</div>
+			<div class="col-md-8">
+				<label for="direccion">Direccion</label>
+				<input class="form-control" type="text" name="direccion" id="direccion" value="{{tercero.direccion}}" required>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-4">
+				<label for="telefono">* Telefono</label>
+				<input class="form-control" type="text" name="telefono" id="telefono" value="{{tercero.telefono}}" required>
+			</div>
+			<div class="col-md-4">
+				<label for="email">* Email</label>
+				<input class="form-control" type="email" name="email" id="email" value="{{tercero.email}}" required>
+			</div>
+			<div class="col-md-4">
+				<label for="id_tipo_tercero">* Tipo de tercero</label>
+				<select class="form-control" name="id_tipo_tercero" id="id_tipo_tercero" required>
+					{% for tipo_tercero in tipo_terceros %}
+						<option value="{{tipo_tercero.id_tipo_tercero}}" {% if tercero.id_tipo_tercero == tipo_tercero.id_tipo_tercero %}selected{% endif %}>{{tipo_tercero.nombre}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div>
+			<p><i>( * ) Campos obligatorios</i></p>
+		</div>
+		<div>
+			<button class="btn btn-warning" type="submit">Actualizar</button>
+			<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmar">Eliminar</button>
+			<a class="btn btn-secondary" href="{{url_for('terceros.index')}}">Cancelar</a>
+		</div>
+	</form>
+</div>
+
+<!-- VENTANA MODAL PARA CONFIRMAR LA ELIMINACION DE UN REGISTRO -->
+<div class="modal fade" id="confirmar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+    	<div class="modal-content">
+	      	<div class="modal-header">
+	        	<h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar tercero</h1>
+	        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      	</div>
+	      	<div class="modal-body">
+	        	<p>¿Desea eliminar este tercero?</p>
+	      	</div>
+		    <div class="modal-footer">
+		    	<button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+		    	<a class="btn btn-danger btn-sm" href="{{url_for('terceros.delete', id_tercero = tercero.id_tercero)}}">Si</a>
+		    </div>
+    	</div>
+  	</div>
+</div>
+{% endblock %}

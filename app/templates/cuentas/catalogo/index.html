@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Catalogo de cuentas{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div>
+		<h1 class="display-6">Catalogo de cuentas</h1>
+		<a href="{{url_for('catalogo_cuentas.create')}}" class="btn btn-success">Nuevo</a>
+		<button type="button" class="btn btn-primary" id="btnGenerarPDF"><i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF</button>
+	</div>
+	<table class="table table-hover mt-3">
+		<thead>
+			<tr>
+				<th class="col">Codigo</th>
+				<th class="col">Nombre</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for cuenta in catalogo_cuentas %}
+			<tr>
+				<td>{{cuenta.cod_cuenta}}</td>
+				<td>{{cuenta.nombre}}</td>
+				<td>
+					<a href="{{url_for('catalogo_cuentas.update', cod_cuenta=cuenta.cod_cuenta)}}" class="btn btn-sm btn-dark"><i class="bi bi-pencil-square"></i></a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<!-- GENERADOR DE PDF -->
+<script type="text/javascript">
+	const generarPDF = async () => {
+        try {
+            const respuesta = await fetch("{{url_for('catalogo_cuentas.get')}}");
+            const data = await respuesta.json();
+
+            const tipo_cuentas = [];
+
+            data.forEach(tipo_cuenta => {
+            	tipo_cuentas.push([
+            		tipo_cuenta.cod_cuenta, 
+            		tipo_cuenta.nombre, 
+            	]);
+        	});
+
+        	const doc = new jspdf.jsPDF();
+
+        	doc.text("Catalogo de cuentas", 16, 10);
+        	doc.autoTable({
+                head: [['Codigo', 'Nombre']], 
+                body: tipo_cuentas,
+                startY: 15,
+                theme: 'plain',
+        	});
+
+        	doc.save('catalogo-cuentas.pdf');
+        } catch (error) {
+            console.log(error);
+        }
+	}
+</script>
+{% endblock %}

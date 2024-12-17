@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Documentos{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div>
+		<h1 class="display-6">Documento</h1>
+		<a href="#" class="btn btn-success">Nuevo</a>
+		<button type="button" class="btn btn-primary" id="btnGenerarPDF"><i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF</button>
+	</div>
+	<table class="table table-hover mt-3">
+		<thead>
+			<tr>
+				<th class="col">Numero de Documento</th>
+				<th class="col">Fecha de creacion</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for documento in documentos %}
+			<tr>
+				<td>{{documento.num_documento}}</td>
+				<td>{{documento.fecha_creacion}}</td>
+				<!-- <td>
+					<a href="{{url_for('documentos.update', id_documento=tipo_documento.id_tipo_documento)}}" class="btn btn-sm btn-dark"><i class="bi bi-pencil-square"></i></a>
+				</td> -->
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

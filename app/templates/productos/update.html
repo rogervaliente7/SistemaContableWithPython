@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Productos{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<h2 class="display-6">Modificar producto</h2>
+	<form action="" method="POST">
+		<div class="row mb-3">
+			<div class="col-md-6">
+				<label for="cod_producto">* Codigo</label>
+				<input class="form-control" type="text" name="cod_producto" id="cod_producto" value="{{producto.cod_producto}}" required disabled>
+			</div>
+			<div class="col-md-6">
+				<label for="nombre">* Nombre</label>
+				<input class="form-control" type="text" name="nombre" id="nombre" value="{{producto.nombre}}" required>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-6">
+				<label for="precio">* Precio</label>
+				<input class="form-control" type="number" step="0.01" min="0" name="precio" id="precio" value="{{producto.precio}}" required>
+			</div>
+			<div class="col-md-6">
+				<label for="existencias">* Existencias</label>
+				<input class="form-control" type="number" name="existencias" id="existencias" value="{{producto.existencias}}" required>
+			</div>
+		</div>
+		<div>
+			<p><i>( * ) Campos obligatorios</i></p>
+		</div>
+		<div>
+			<button class="btn btn-warning" type="submit">Actualizar</button>
+			<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmar">Eliminar</button>
+			<a class="btn btn btn-secondary" href="{{url_for('productos.index')}}">Cancelar</a>
+		</div>
+	</form>
+</div>
+
+<!-- VENTANA MODAL PARA CONFIRMAR LA ELIMINACION DE UN REGISTRO -->
+<div class="modal fade" id="confirmar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+    	<div class="modal-content">
+	      	<div class="modal-header">
+	        	<h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar producto</h1>
+	        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      	</div>
+	      	<div class="modal-body">
+	        	<p>¿Desea eliminar este producto?</p>
+	      	</div>
+		    <div class="modal-footer">
+		    	<button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+		    	<a class="btn btn-danger btn-sm" href="{{url_for('productos.delete', cod_producto = producto.cod_producto)}}">Si</a>
+		    </div>
+    	</div>
+  	</div>
+</div>
+{% endblock %}

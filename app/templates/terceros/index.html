@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Terceros{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div>
+		<h1 class="display-6">Terceros</h1>
+		<a href="{{url_for('terceros.create')}}" class="btn btn-success">Nuevo</a>
+		<button type="button" class="btn btn-primary" id="btnGenerarPDF"><i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF</button>
+	</div>
+	<table class="table table-hover mt-3">
+		<thead>
+			<tr>
+				<th class="col">Nombre</th>
+				<th class="col">Direccion</th>
+				<th class="col">Telefono</th>
+				<th class="col">Email</th>
+				<th class="col">Tipo</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for tercero in terceros %}
+			<tr>
+				<td>{{tercero.nombre}}</td>
+				<td>{{tercero.direccion}}</td>
+				<td>{{tercero.telefono}}</td>
+				<td>{{tercero.email}}</td>
+				<td>{{tercero.tipo_tercero.nombre}}</td>
+				<td><a href="{{url_for('terceros.update', id_tercero = tercero.id_tercero)}}" class="btn btn-sm btn-dark"><i class="bi bi-pencil-square"></i></a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<!-- GENERADOR DE PDF -->
+<script type="text/javascript">
+	const generarPDF = async () => {
+        try {
+            const respuesta = await fetch("{{url_for('terceros.get')}}");
+            const data = await respuesta.json();
+
+            const terceros = [];
+
+            data.forEach(tercero => {
+            	terceros.push([
+            		tercero.id_tercero, 
+            		tercero.nombre, 
+            		tercero.direccion, 
+            		tercero.telefono, 
+            		tercero.email, 
+            		tercero.tipo_tercero
+            	]);
+        	});
+
+        	const doc = new jspdf.jsPDF();
+
+        	doc.text("Terceros", 16, 10);
+        	doc.autoTable({
+                head: [['Id', 'Nombre', 'Direccion', 'Telefono', 'Email', 'Tipo']], 
+                body: terceros,
+                startY: 15,
+                theme: 'plain',
+        	});
+
+        	doc.save('terceros.pdf');
+        } catch (error) {
+            console.log(error);
+        }
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Cuentas{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<h2 class="display-6">Nueva cuenta</h2>
+	<form action="" method="POST">
+		<div class="row mb-3">
+			<div class="col-md-5">
+				<label for="nombre">* Nombre</label>
+				<input class="form-control" type="text" name="nombre" id="nombre" required>
+			</div>
+			<div class="col-md-5">
+				<label for="cod_tipo_cuenta">* Tipo de cuenta</label>
+				<select class="form-control" name="cod_tipo_cuenta" id="cod_tipo_cuenta" required>
+					<option value="" selected>- Selecciona el tipo de cuenta -</option>
+					{% for tipo_cuenta in tipo_cuentas %}
+						<option value="{{tipo_cuenta.cod_cuenta}}">{{tipo_cuenta.nombre}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-5">
+				<label for="debe">Debe</label>
+				<input class="form-control" type="number" name="debe" id="debe">
+			</div>
+			<div class="col-md-5">
+				<label for="haber">Haber</label>
+				<input class="form-control" type="number" name="haber" id="haber">
+			</div>
+		</div>
+		<div>
+			<p><i>( * ) Campos obligatorios</i></p>
+		</div>
+		<div>
+			<button class="btn btn-success" type="submit">Guardar</button>
+			<a class="btn btn-secondary" href="{{url_for('cuentas.index')}}">Cancelar</a>
+		</div>
+	</form>
+</div>
+{% endblock %}

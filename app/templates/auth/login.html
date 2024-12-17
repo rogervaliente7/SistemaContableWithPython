@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Login{% endblock %}
+
+{% block contenido %}
+<style>
+    body {
+        background-image: url("{{url_for('static', filename = 'images/background_login.jpeg')}}");
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .login {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    .login .login-content {
+        min-width: 0;
+        flex-grow: 1;
+    }
+    .login .login-footer {
+        min-width: 0;
+    }
+</style>
+<div class="login">
+    <div class="login-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="card shadow-lg border-0 rounded-lg mt-5">
+                        <div class="card-header">
+                            <h3 class="text-center display-6 my-4">
+                                <img src="{{url_for('static', filename = 'images/icon.png')}}" width="48">
+                                Sistema Contable
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="/auth/login" method="POST">
+                                <div class="form-group">
+                                    <label class="mb-1" for="username">Usuario</label>
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="Ingresa tu usuario" autofocus required>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label class="mb-1" for="password">Contraseña</label>
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu contraseña" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                    <input type="submit" class="btn btn-primary" value="Ingresar">
+                                </div>
+                            </form>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="login-footer">
+        <div class="py-3 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Proyecto de Sistemas Contables 2023 - UES FMOcc</div>
+                </div>
+                <div>
+                    Confia tu contabilidad con nosotros
+                    <a href="#">Facebook</a>
+                    &middot;
+                    <a href="#">Sitio Web</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

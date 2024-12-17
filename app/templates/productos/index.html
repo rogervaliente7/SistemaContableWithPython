@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Productos{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<div>
+		<h1 class="display-6">Productos</h1>
+		<a href="{{url_for('productos.create')}}" class="btn btn-success">Nuevo</a>
+		<button type="button" class="btn btn-primary" id="btnGenerarPDF"><i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF</button>
+	</div>
+	<table class="table table-hover mt-3">
+		<thead>
+			<tr>
+				<th class="col">Codigo</th>
+				<th class="col">Nombre</th>
+				<th class="col">Precio</th>
+				<th class="col">Existencias</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for producto in productos %}
+			<tr>
+				<td>{{producto.cod_producto}}</td>
+				<td>{{producto.nombre}}</td>
+				<td>{{producto.precio}}</td>
+				<td>{{producto.existencias}}</td>
+				<td><a href="{{url_for('productos.update', cod_producto = producto.cod_producto)}}" class="btn btn-sm btn-dark"><i class="bi bi-pencil-square"></i></a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<!-- GENERADOR DE PDF -->
+<script type="text/javascript">
+	const generarPDF = async () => {
+        try {
+            const respuesta = await fetch("{{url_for('productos.get')}}");
+            const data = await respuesta.json();
+
+            const productos = [];
+
+            data.forEach(producto => {
+            	productos.push([producto.cod_producto, producto.nombre, producto.precio, producto.existencias]);
+        	});
+
+        	const doc = new jspdf.jsPDF();
+
+        	doc.text("Productos", 16, 10);
+        	doc.autoTable({
+                head: [['Codigo', 'Nombre', 'Precio', 'Existencias']], 
+                body: productos,
+                startY: 15,
+                theme: 'plain',
+        	});
+
+        	doc.save('productos.pdf');
+        } catch (error) {
+            console.log(error);
+        }
+	}
+</script>
+{% endblock %}

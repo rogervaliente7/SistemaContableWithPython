@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+<div class="container-sm">
+	<h1 class="display-3">Bienvenid@</h1>
+
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<table class="table table-sm table-bordered mt-3">
+				<thead>
+					<tr>
+						<th colspan="2">INFORMACION DEL SISTEMA</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><b>Tipo de sistema</b></td>
+						<td>WEB</td>
+					</tr>
+					<tr>
+						<td><b>Lenguaje de programacion</b></td>
+						<td>Python</td>
+					</tr>
+					<tr>
+						<td><b>Framework</b></td>
+						<td>Flask</td>
+					</tr>
+					<tr>
+						<td><b>Base de datos</b></td>
+						<td>SQLite</td>
+					</tr>
+					<tr>
+						<td><b>ORM</b></td>
+						<td>SQLAlchemy</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

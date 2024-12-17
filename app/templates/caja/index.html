@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Caja{% endblock %}
+
+{% block contenido %}
+<div class="container-sm" x-data="caja" x-init="init">
+	<div class="row mb-3">
+		<div class="col-md-5">
+			<label for="cod_producto">Codigo del producto</label>
+			<div class="input-group flex-nowrap">
+			 	<span class="input-group-text" id="addon-wrapping"><i class="bi bi-upc"></i></span>
+			 	<input class="form-control" @keyup.enter="obtenerProducto" x-model="producto.cod_producto"  list="lista_productos" autocomplete="off" id="cod_producto" placeholder="Escribe el código y presiona enter">
+				<datalist id="lista_productos">
+					{% for producto in productos %}
+				 	<option value="{{producto.cod_producto}}">{{producto.cod_producto}} - {{producto.nombre}}</option>
+				  	{% endfor %}
+				</datalist>
+			</div>
+		</div>
+		<div class="col-md-2">
+			
+		</div>
+		<div class="col-md-5">
+			<label for="cliente">Cliente</label>
+			<div class="input-group flex-nowrap">
+				<div class="input-group">
+					<span class="input-group-text" id="addon-wrapping"><i class="bi bi-person-lines-fill"></i></span>
+				 	<input class="form-control" type="text" x-model="id_cliente" required>
+				 	<a href="{{url_for('terceros.create')}}" class="btn btn-primary"><i class="bi bi-person-plus-fill"></i></a>
+	            </div>
+			</div>
+		</div>
+	</div>
+	<div class="card">
+		  <p class="card-header pt-1 pb-1">Detalle de la venta</p>
+  		<div class="card-body">
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<label for="nombre_producto">Nombre del producto</label>
+					<input class="form-control" type="text" x-model="producto.nombre" disabled>
+				</div>
+				<div class="col-md-3">
+					<label for="precio_producto">Precio</label>
+					<input class="form-control" type="text" x-model="producto.precio" disabled>
+				</div>
+				<div class="col-md-3">
+					<label for="cantidad_producto">Cantidad</label>
+					<input class="form-control" type="number" x-model="producto.cantidad" min="1">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<button class="btn btn-success" id="btn_agregar_producto" type="button" @click="agregar" x-bind:disabled="btnAgregar">Agregar</button>
+					<span x-text="mensaje" style="color: red"></span>
+				</div>
+				<div class="col-md-6">
+			
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<table class="table table-sm mt-3">
+		<thead>
+			<tr class="table-dark">
+				<th class="col">Código</th>
+				<th class="col">Nombre</th>
+				<th class="col">Precio</th>
+				<th class="col">Cantidad</th>
+				<th class="col">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			<template x-for="detalle in venta.detalles">
+				<tr>
+					<td x-text="detalle.cod_producto"></td>
+					<td x-text="detalle.nombre"></td>
+					<td x-text="detalle.precio"></td>
+					<td x-text="detalle.cantidad"></td>
+					<td x-text="detalle.total"></td>
+				</tr>
+			</template>
+		</tbody>
+	</table>
+	<div class="row mb-3">
+		<div class="col-md-5">
+			<button class="btn btn-success" @click="completarVenta" type="button">Completar venta</button>
+			<button class="btn btn-secondary" @click="init" type="button">Cancelar</button>
+		</div>
+		<div class="col-md-5">
+			<h2>Total: $<span x-text="total"></span></h2>
+		</div>
+	</div>
+</div>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script type="text/javascript">
+	document.addEventListener('alpine:init', () => {
+        Alpine.data('caja', () => ({
+        	mensaje: null,
+        	btnAgregar: null,
+        	total: null,
+        	id_cliente: null,
+            producto: null,
+			venta: null,
+			init () {
+				this.mensaje = ''
+				this.btnAgregar = true;
+				this.venta = {id_cliente:'', detalles:[]}
+				this.id_cliente = ''
+				this.total = 0
+				this.producto = {
+					cod_producto: '',
+					nombre: '',
+					precio: '',
+					cantidad: ''
+				}
+			},
+			async obtenerProducto () {
+				const url = 'http://127.0.0.1:5000/productos/get/' + this.producto.cod_producto;
+				try {
+					const producto = await (await fetch(url)).json()
+					this.producto.nombre = producto.nombre;
+					this.producto.precio = producto.precio;
+					this.producto.cantidad = 1;
+					this.mensaje = ''
+					this.btnAgregar = false
+				} catch (error) {
+					this.producto.nombre = '';
+					this.producto.precio = '';
+					this.mensaje = 'El producto no existe'
+					this.btnAgregar = true
+				}
+			},
+			agregar () {
+				const total = this.producto.precio*this.producto.cantidad;
+				this.venta.detalles.push({
+					cod_producto: this.producto.cod_producto,
+					nombre: this.producto.nombre,
+					precio: this.producto.precio,
+					cantidad: this.producto.cantidad,
+					total: total,
+				});
+				this.btnAgregar = true
+				this.producto.cod_producto = ''
+				this.producto.nombre = ''
+				this.producto.precio = ''
+				this.producto.cantidad = ''
+				this.total+=total;
+			},
+			async completarVenta () {
+				const url = 'http://127.0.0.1:5000/caja/venta'
+				this.venta.id_cliente = this.id_cliente
+				if (this.venta.id_cliente) {
+					try {
+					  	const response = await fetch(url, {
+						    method: 'POST',
+						    mode: 'cors',
+						    cache: 'no-cache',
+						    credentials: 'same-origin',
+						    headers: {
+						      'Content-Type': 'application/json'
+						    },
+						    redirect: 'follow',
+						    referrerPolicy: 'no-referrer',
+						    body: JSON.stringify(this.venta)
+					  	});
+					  	if (response.ok) {
+					  		const respuesta = await response.json()
+					  		generarPDF(respuesta.id_factura)
+					  		this.init()
+					  	} else {
+					  		alert('Error al completar la venta')
+					  	}
+				  	} catch (error) {
+				  		alert('Error al completar la venta')
+				  	}
+				} else {
+					alert('Debes asignar un cliente para poder completar la venta')
+				}
+			}
+    	}))
+	})
+	const generarPDF = async (id_factura) => {
+        try {
+            const respuesta = await fetch("http://127.0.0.1:5000/caja/venta/get/" + id_factura);
+            const data = await respuesta.json();
+
+            const detalles = [];
+
+            data.detalle.forEach(detalle => {
+            	detalles.push([detalle.cod_producto, detalle.nombre_producto, detalle.precio_venta, detalle.cantidad, detalle.monto]);
+        	});
+
+        	const doc = new jspdf.jsPDF();
+
+        	doc.text(`FACTURA`, 16, 10);
+        	doc.text(`${data.fecha}`, 150, 10)
+        	doc.text(`Codigo: ${data.id_factura}`, 16, 20)
+        	doc.text(`Total: $${data.total}`, 150, 20)
+        	doc.autoTable({
+                head: [['Codigo', 'Nombre', 'Precio', 'cantidad', 'monto']], 
+                body: detalles,
+                startY: 30,
+                theme: 'plain',
+        	});
+        	
+        	doc.save(`factura${data.id_factura}.pdf`);
+        } catch (error) {
+            console.log(error);
+        }
+	}
+</script>
+
+{% endblock %}

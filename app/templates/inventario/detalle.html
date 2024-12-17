@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Ventas{% endblock %}
+
+{% block contenido %}
+<div class="container">
+    <div class="row no-gutters">
+        <div class="col-md-6">
+            <h2 class="display-6">Compra</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <table width="100%">
+                        <tr>
+                            <td width="30%"><b>Codigo:</b></td>
+                            <td width="70%">{{compra.id_compra}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Fecha:</b></td>
+                            <td>{{compra.fecha}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Total:</b></td>
+                            <td>${{compra.total}}</td>
+                        </tr>
+                    </table>
+                    <button type="button" class="btn btn-sm btn-primary mt-2" id="btnGenerarPDF"><i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF</button>
+                </div>
+            </div>   
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{{url_for('static', filename = 'images/blank-profile.png')}}" class="img-thumbnail ">
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="card-title">Proveedor</h5>
+                            <table width="100%">
+                                <tr>
+                                    <td width="30%"><b>Nombre:</b></td>
+                                    <td width="70%">{{compra.tercero.nombre}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Dereccion:</b></td>
+                                    <td>{{compra.tercero.direccion}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Telefono:</b></td>
+                                    <td>{{compra.tercero.telefono}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Email:</b></td>
+                                    <td>{{compra.tercero.email}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th class="col">Codigo</th>
+                <th class="col">Nombre</th>
+                <th class="col">Costo</th>
+                <th class="col">Cantidad</th>
+                <th class="col">Monto</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for detalle in compra.detalles %}
+            <tr>
+                <td>{{detalle.cod_producto}}</td>
+                <td>{{detalle.producto.nombre}}</td>
+                <td>${{detalle.costo}}</td>
+                <td>{{detalle.cantidad}}</td>
+                <td>${{detalle.monto}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    const generarPDF = async () => {
+        try {
+            const respuesta = await fetch("http://127.0.0.1:5000/inventario/compra/get/{{compra.id_compra}}");
+            const data = await respuesta.json();
+
+            const detalles = [];
+
+            data.detalle.forEach(detalle => {
+            	detalles.push([detalle.cod_producto, detalle.nombre_producto, detalle.costo, detalle.cantidad, detalle.monto]);
+        	});
+
+        	const doc = new jspdf.jsPDF();
+
+        	doc.text(`Comprobante de compra`, 16, 10);
+        	doc.text(`${data.fecha}`, 150, 10)
+        	doc.text(`Codigo: ${data.id_compra}`, 16, 20)
+        	doc.text(`Total: $${data.total}`, 150, 20)
+        	doc.autoTable({
+                head: [['Codigo', 'Nombre', 'Costo', 'Cantidad', 'Monto']], 
+                body: detalles,
+                startY: 30,
+                theme: 'plain',
+        	});
+        	doc.save(`compra${data.id_factura}.pdf`);
+        } catch (error) {
+            console.log(error);
+        }
+	}
+</script>
+{% endblock %}
